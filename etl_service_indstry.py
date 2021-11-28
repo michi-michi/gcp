@@ -49,9 +49,7 @@ with airflow.DAG(
         source_format='CSV',
         autodetect=True,
         create_disposition='CREATE_IF_NEEDED'
-        
     )
-
     # リスト6-5. gcpbook_ch5.dauテーブルへの書き込みタスクの定義
     # BigQueryの作業用テーブルとユーザ情報テーブルを結合し、課金ユーザと
     # 無課金ユーザそれぞれのユーザ数を算出して、結果をgcpbook_ch5.dau
