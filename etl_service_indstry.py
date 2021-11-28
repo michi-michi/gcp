@@ -59,7 +59,7 @@ with airflow.DAG(
         use_legacy_sql=False,
         sql="""
         #temp1はカラム名を変更&YYYY年MMorM年DDになっているもののみ抽出(deteでpがSI_rawついているのもを除去)
-        CREATE OR REPLACE TABLE  `data-engineer5125.workflow_test._aferTransaction`AS
+        CREATE OR REPLACE TABLE  `data-engineer5125.workflow_test.SI_raw_aferTransaction`AS
         (WITH `temp1` AS 
         (SELECT
             ____________ AS item
@@ -104,7 +104,7 @@ with airflow.DAG(
     delete_work_table = \
         bigquery_table_delete_operator.BigQueryTableDeleteOperator(
             task_id='delete_work_table',
-            deletion_dataset_table='data-engineer-5125.workflow_test'
+            deletion_dataset_table='workflow_test.SI_raw'
         )
 
     # リスト6-7. タスクの依存関係の定義
