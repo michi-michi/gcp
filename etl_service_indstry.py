@@ -45,8 +45,9 @@ with airflow.DAG(
         bucket=os.environ.get('PROJECT_ID') + '-data-engineer-5125',
         #source_objects=['data/events/{{ ds_nodash }}/*.json.gz'],
         source_objects=['service_industry_sales.csv'],
-        destination_project_dataset_table='data-engineer-5125.workflow_test',
-        source_format='CSV'
+        destination_project_dataset_table='workflow_test.SI_raw',
+        source_format='CSV',
+        create_disposition='CREATE_IF_NEEDED'
     )
 
     # リスト6-5. gcpbook_ch5.dauテーブルへの書き込みタスクの定義
@@ -57,8 +58,8 @@ with airflow.DAG(
         task_id='etl',
         use_legacy_sql=False,
         sql="""
-        #temp1はカラム名を変更&YYYY年MMorM年DDになっているもののみ抽出(deteでpがついているのもを除去)
-        CREATE OR REPLACE TABLE  `data-engineer5125.workflow_test.SI_raw_aferTransaction`AS
+        #temp1はカラム名を変更&YYYY年MMorM年DDになっているもののみ抽出(deteでpがSI_rawついているのもを除去)
+        CREATE OR REPLACE TABLE  `data-engineer5125.workflow_test._aferTransaction`AS
         (WITH `temp1` AS 
         (SELECT
             ____________ AS item
@@ -68,7 +69,7 @@ with airflow.DAG(
             ELSE ____________________________________ END AS date
             ,unit
             ,value
-        FROM `data-engineer5125.SI_analysys.SI_raw`
+        FROM `data-engineer5125.workflow_test.SI_raw`
         WHERE REGEXP_CONTAINS( ____________________________________,'.*年.月|.*年..月')
         )
         ,`temp2` AS  #temp2は年を-0or-に変更
