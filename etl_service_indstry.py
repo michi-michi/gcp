@@ -46,8 +46,7 @@ with airflow.DAG(
         source_objects=['service_industry_sales.csv'],
         destination_project_dataset_table='workflow_test.SI_raw',
         source_format='CSV',
-        write_disposition='WRITE_TRUNCATE',
-        schema_update_options=['ALLOW_FIELD_ADDITION']
+        autodetect=True
     )
     # リスト6-5. gcpbook_ch5.dauテーブルへの書き込みタスクの定義
     # BigQueryの作業用テーブルとユーザ情報テーブルを結合し、課金ユーザと
