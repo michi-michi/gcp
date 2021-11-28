@@ -44,11 +44,10 @@ with airflow.DAG(
         bucket='data-engineer-5125',
         #source_objects=['data/events/{{ ds_nodash }}/*.json.gz'],
         source_objects=['service_industry_sales.csv'],
-        schema_fields=None,
         destination_project_dataset_table='workflow_test.SI_raw',
         source_format='CSV',
         write_disposition='WRITE_TRUNCATE',
-        autodetect=True,
+        schema_update_options=['ALLOW_FIELD_ADDITION']
     )
     # リスト6-5. gcpbook_ch5.dauテーブルへの書き込みタスクの定義
     # BigQueryの作業用テーブルとユーザ情報テーブルを結合し、課金ユーザと
