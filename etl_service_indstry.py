@@ -42,7 +42,7 @@ with airflow.DAG(
     # 取り込むタスクを定義する。
     load_events = gcs_to_bq.GoogleCloudStorageToBigQueryOperator(
         task_id='load_events',
-        bucket=os.environ.get('PROJECT_ID') + '-data-engineer-5125',
+        bucket='data-engineer-5125',
         #source_objects=['data/events/{{ ds_nodash }}/*.json.gz'],
         source_objects=['service_industry_sales.csv'],
         destination_project_dataset_table='workflow_test.SI_raw',
