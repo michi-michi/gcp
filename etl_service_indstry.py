@@ -44,6 +44,7 @@ with airflow.DAG(
         bucket='data-engineer-5125',
         #source_objects=['data/events/{{ ds_nodash }}/*.json.gz'],
         source_objects=['service_industry_sales.csv'],
+        schema_fields=None,
         destination_project_dataset_table='workflow_test.SI_raw',
         source_format='CSV',
         write_disposition='WRITE_TRUNCATE',
