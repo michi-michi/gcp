@@ -36,7 +36,6 @@ with airflow.DAG(
         # 日次でDAGを実行する。
         schedule_interval=datetime.timedelta(days=1),
         catchup=False) as dag:
-
     # リスト6-4. ユーザ行動ログ取り込みタスクの定義
     # Cloud Storage上のユーザ行動ログをBigQueryの作業用テーブルへ
     # 取り込むタスクを定義する。
@@ -47,8 +46,8 @@ with airflow.DAG(
         source_objects=['service_industry_sales.csv'],
         destination_project_dataset_table='workflow_test.SI_raw',
         source_format='CSV',
+        write_disposition='WRITE_TRUNCATE',
         autodetect=True,
-        create_disposition='CREATE_IF_NEEDED'
     )
     # リスト6-5. gcpbook_ch5.dauテーブルへの書き込みタスクの定義
     # BigQueryの作業用テーブルとユーザ情報テーブルを結合し、課金ユーザと
