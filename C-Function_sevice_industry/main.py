@@ -6,7 +6,7 @@ def industry_sales_extract(request):
     project_id = "data-engineer-5125-336206"
     client = gcs.Client(project_id)
     #バケットのインスタンスを取得
-    bucket = client.bucket('ddata-engineer-5125-336206')
+    bucket = client.bucket('data-engineer-5125-336206')
     #ファイルのblobインスタンスを取得
     blob = bucket.blob('service_industry_sales.csv')
     url = "http://api.e-stat.go.jp/rest/3.0/app/getSimpleStatsData"
