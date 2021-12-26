@@ -17,7 +17,7 @@ import pendulum
 # 失敗した時に、メール送るか送るなら宛先、リトライするか、リトライするなら何回、いつ行うかを決めれる
 # 宛先はまとめれる？
 default_args = {
-    'owner': 'data-engineer-5125',
+    'owner': 'data-engineer-5125-336206',
     'depends_on_past': True,
     'email': [''],
     'email_on_failure': False,
@@ -41,7 +41,7 @@ with airflow.DAG(
     # 取り込むタスクを定義する。
     load_events = gcs_to_bq.GoogleCloudStorageToBigQueryOperator(
         task_id='load_events',
-        bucket='data-engineer-5125',
+        bucket='data-engineer-5125-336206',
         #source_objects=['data/events/{{ ds_nodash }}/*.json.gz'],
         source_objects=['service_industry_sales.csv'],
         destination_project_dataset_table='workflow_test.SI_raw',
