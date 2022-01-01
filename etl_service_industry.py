@@ -58,7 +58,6 @@ with airflow.DAG(
         task_id='etl',
         use_legacy_sql=False,
         sql="""
-        #temp1はカラム名を変更&YYYY年MMorM年DDになっているもののみ抽出(deteでpがSI_rawついているのもを除去)
         CREATE OR REPLACE TABLE  `data-engineer-5125-336206.workflow_test.SI_raw_aferTransaction`AS
         (WITH `temp1` AS 
         (SELECT
@@ -72,7 +71,7 @@ with airflow.DAG(
         FROM `data-engineer-5125-336206.workflow_test.SI_raw`
         WHERE REGEXP_CONTAINS( ____________________________________,'.*年.月|.*年..月')
         )
-        ,`temp2` AS  #temp2は年を-0or-に変更
+        ,`temp2` AS
         (SELECT 
             CASE WHEN date LIKE '%p' THEN REPLACE(date,'  p','') 
                 WHEN date LIKE '%年_月' THEN REPLACE(date,'年','-0')
@@ -83,10 +82,9 @@ with airflow.DAG(
             ,industry
             ,area
             ,value
-            unit
+            ,unit
         FROM `temp1`
         )
-        #temp2の月を-01に変更して抽出
         SELECT 
           REPLACE(date,'月','-01') AS date
           ,item
