@@ -102,7 +102,7 @@ with airflow.DAG(
     delete_work_table = \
         bigquery_table_delete_operator.BigQueryTableDeleteOperator(
             task_id='delete_work_table',
-            deletion_dataset_table='workflow_test.SI_raw'
+            deletion_dataset_table='data-engineer-5125-336206.workflow_test.SI_raw'
         )
 
     # リスト6-7. タスクの依存関係の定義
