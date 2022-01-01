@@ -59,7 +59,7 @@ with airflow.DAG(
         use_legacy_sql=False,
         sql="""
         #temp1はカラム名を変更&YYYY年MMorM年DDになっているもののみ抽出(deteでpがSI_rawついているのもを除去)
-        CREATE OR REPLACE TABLE  `data-engineer5125.workflow_test.SI_raw_aferTransaction`AS
+        CREATE OR REPLACE TABLE  `data-engineer-5125-336206.workflow_test.SI_raw_aferTransaction`AS
         (WITH `temp1` AS 
         (SELECT
             ____________ AS item
@@ -69,7 +69,7 @@ with airflow.DAG(
             ELSE ____________________________________ END AS date
             ,unit
             ,value
-        FROM `data-engineer5125.workflow_test.SI_raw`
+        FROM `data-engineer-5125-336206.workflow_test.SI_raw`
         WHERE REGEXP_CONTAINS( ____________________________________,'.*年.月|.*年..月')
         )
         ,`temp2` AS  #temp2は年を-0or-に変更
