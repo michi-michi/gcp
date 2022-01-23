@@ -96,7 +96,6 @@ with airflow.DAG(
           ORDER BY industry ,date ASC)
         """
     )
-
     transaction_2 = bigquery_operator.BigQueryOperator(
         task_id='transaction_2',
         use_legacy_sql=False,
@@ -121,57 +120,48 @@ with airflow.DAG(
                     industry not like '82aうち社会教育，職業・教育支援施設'
                 and industry not like '82bうち学習塾，教養・技能教授業'
                 order by 3)
-/*
-37~41は大カテゴリGに分類
-42~49は大カテゴリHに分類
-68~70は大カテゴリKに分類
-72~74は大カテゴリLに分類
-75~77は大カテゴリMに分類
-78~80は大カテゴリNに分類
-*/
-        ,large_category_add_tbl as(
+            
+            ,large_category_add_tbl as(
+                select
+                  date
+                  ,item
+                  ,middle_category_name
+                  ,area
+                  ,case
+                  when middle_category between 37 and 41 then 'G'
+                  when middle_category between 42 and 49 then 'H'
+                  when middle_category between 68 and 70 then 'K'
+                  when middle_category between 72 and 74 then 'L'
+                  when middle_category between 75 and 77 then 'M'
+                  when middle_category between 78 and 80 then 'N'
+                  when middle_category = 82 then 'O'
+                  when middle_category between 83 and 85 then 'P'
+                  when middle_category between 88 and 95 then 'R'
+                  else null
+                  end as large_category
+                  ,middle_category
+                  ,value
+                  ,unit
+                from
+                  middle_category_add_tbl
+                where
+                  middle_category is not null
+                or
+                  middle_category_name in ('その他'))
             select 
-                date
-                ,item
-                ,middle_category_name
-                ,area
-                ,case
-                when middle_category between 37 and 41 then 'G'
-                when middle_category between 42 and 49 then 'H'
-                when middle_category between 68 and 70 then 'K'
-                when middle_category between 72 and 74 then 'L'
-                when middle_category between 75 and 77 then 'M'
-                when middle_category between 78 and 80 then 'N'
-                when middle_category = 82 then 'O'
-                when middle_category between 83 and 85 then 'P'
-                when middle_category between 88 and 95 then 'R'
-                else null
-                end as large_category
-                ,middle_category
-                ,value
-                ,unit
+              date
+              ,item
+              ,area
+              ,middle_category_name
+              ,large_category
+              ,middle_category
+              ,value
+              ,unit
             from
-                middle_category_add_tbl
-            where 
-                middle_category is not null
-            or 
-                middle_category_name in ('その他')
-        )
-        select 
-            date
-            ,item
-            ,area
-            ,middle_category_name
-            ,large_category
-            ,middle_category
-            ,value
-            ,unit
-        from
-            large_category_add_tbl
-        order by middle_category asc)
+              large_category_add_tbl
+            order by middle_category asc)
         """
     )
-
     transaction_3 = bigquery_operator.BigQueryOperator(
         task_id='transaction_3',
         use_legacy_sql=False,
@@ -189,7 +179,6 @@ with airflow.DAG(
             group by 1,2)
         """
     )
-    
     transaction_4 = bigquery_operator.BigQueryOperator(
         task_id='transaction_4',
         use_legacy_sql=False,
@@ -212,7 +201,6 @@ with airflow.DAG(
             order by 6,1)
         """
     )
-
     # リスト6-6. 作業用テーブルを削除するタスクの定義
     # BigQueryの作業用テーブルを削除するタスクを定義する。
     delete_work_table = \
@@ -220,7 +208,6 @@ with airflow.DAG(
             task_id='delete_work_table',
             deletion_dataset_table='data-engineer-5125-336206.workflow_test.SI_raw'
         )
-
     # リスト6-7. タスクの依存関係の定義
     # 各タスクの依存関係を定義する。
     load_events >> transaction_1 >> transaction_2 >>transaction_3 >> delete_work_table
