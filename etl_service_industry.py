@@ -96,7 +96,7 @@ with airflow.DAG(
           ORDER BY industry ,date ASC)
         """
     )
-    transaction_2 = bigquery_operator.BigQueryOperator(
+    transaction_2 = bigquery_operator.BigQueryInsertJobOperator(
         task_id='transaction_2',
         use_legacy_sql=False,
         sql="""
