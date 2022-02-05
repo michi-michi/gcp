@@ -31,7 +31,7 @@ default_args = {
 # リスト6-3. DAGの定義
 # DAGを定義する。
 with airflow.DAG(
-        'etl_service_industry',
+        'etl_service_industry_test',
         default_args=default_args,
         # 日次でDAGを実行する。
         schedule_interval=datetime.timedelta(days=1),
@@ -94,12 +94,7 @@ with airflow.DAG(
           ,unit
           FROM `temp2`
           ORDER BY industry ,date ASC)
-        """
-    )
-    transaction_2 = bigquery_operator.BigQueryOperator(
-        task_id='transaction_2',
-        use_legacy_sql=False,
-        sql="""
+        ;
         create or replace table `data-engineer-5125-336206.workflow_test.category_add_service_industry_sales` as( 
             with middle_category_add_tbl as(
                 select
@@ -160,12 +155,7 @@ with airflow.DAG(
             from
               large_category_add_tbl
             order by middle_category asc)
-        """
-    )
-    transaction_3 = bigquery_operator.BigQueryOperator(
-        task_id='transaction_3',
-        use_legacy_sql=False,
-        sql="""
+        ;
         create or replace table `data-engineer-5125-336206.workflow_test.large_category_table` as(
             select 
                 normalize(regexp_extract(industry,'.'),NFKC) as large_category
@@ -177,12 +167,7 @@ with airflow.DAG(
             and 
                 industry not in ('合計','サービス産業計','その他')
             group by 1,2)
-        """
-    )
-    transaction_4 = bigquery_operator.BigQueryOperator(
-        task_id='transaction_4',
-        use_legacy_sql=False,
-        sql="""
+        ;
         create or replace table `data-engineer-5125-336206.workflow_test.service_industry_mart` as(
             select 
                 date
@@ -210,4 +195,4 @@ with airflow.DAG(
         )
     # リスト6-7. タスクの依存関係の定義
     # 各タスクの依存関係を定義する。
-    load_events >> transaction_1 >> transaction_2 >>transaction_3 >> delete_work_table
+    load_events >> transaction_1 >> delete_work_table
