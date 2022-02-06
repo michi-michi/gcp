@@ -109,8 +109,8 @@ with airflow.DAG(
                   else regexp_extract(industry,'^..(.*)') 
                   end as middle_category_name
                   ,area
-                  ,cast(case when regexp_extract(industry,'^\\d{1,2}') = '4' then '46'
-                  else regexp_extract(industry,'^\\d{1,2}')
+                  ,cast(case when regexp_extract(industry,'^\d{1,2}') = '4' then '46'
+                  else regexp_extract(industry,'^\d{1,2}')
                   end as int)  as middle_category  
                   ,value
                   ,unit
@@ -210,4 +210,4 @@ with airflow.DAG(
         )
     # リスト6-7. タスクの依存関係の定義
     # 各タスクの依存関係を定義する。
-    load_events >> transaction_1 >> transaction_2 >>transaction_3 >> delete_work_table
+    load_events >> transaction_1 >> transaction_2 >>transaction_3 >> transaction_4 >> delete_work_table
