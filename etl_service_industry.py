@@ -109,8 +109,8 @@ with airflow.DAG(
                   else regexp_extract(industry,'^..(.*)') 
                   end as middle_category_name
                   ,area
-                  ,cast(case when regexp_extract(industry,'^\d{1,2}') = '4' then '46'
-                  else regexp_extract(industry,'^\d{1,2}')
+                  ,cast(case when regexp_extract(industry,r'^\\d{1,2}') = '4' then '46'
+                  else regexp_extract(industry,r'^\\d{1,2}')
                   end as int)  as middle_category  
                   ,value
                   ,unit
@@ -173,7 +173,7 @@ with airflow.DAG(
             from 
                 `data-engineer-5125-340406.workflow_test.SI_raw_aferTransaction`
             where 
-                regexp_extract(industry,'^\\d{1,2}') is null
+                regexp_extract(industry,r'^\\d{1,2}') is null
             and 
                 industry not in ('合計','サービス産業計','その他')
             group by 1,2)
