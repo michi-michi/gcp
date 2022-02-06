@@ -17,7 +17,7 @@ import pendulum
 # 失敗した時に、メール送るか送るなら宛先、リトライするか、リトライするなら何回、いつ行うかを決めれる
 # 宛先はまとめれる？
 default_args = {
-    'owner': 'data-engineer-5125-336206',
+    'owner': 'data-engineer-5125-340406',
     'depends_on_past': True,
     'email': [''],
     'email_on_failure': False,
@@ -41,7 +41,7 @@ with airflow.DAG(
     # 取り込むタスクを定義する。
     load_events = gcs_to_bq.GoogleCloudStorageToBigQueryOperator(
         task_id='load_events',
-        bucket='data-engineer-5125-336206',
+        bucket='data-engineer-5125-340406',
         #source_objects=['data/events/{{ ds_nodash }}/*.json.gz'],
         write_disposition='WRITE_TRUNCATE',
         skip_leading_rows=1,
@@ -58,7 +58,7 @@ with airflow.DAG(
         task_id='transaction_1',
         use_legacy_sql=False,
         sql="""
-        CREATE OR REPLACE TABLE  `data-engineer-5125-336206.workflow_test.SI_raw_aferTransaction`AS
+        CREATE OR REPLACE TABLE  `data-engineer-5125-340406.workflow_test.SI_raw_aferTransaction`AS
         (WITH `temp1` AS 
         (SELECT
             ____________ AS item
@@ -68,7 +68,7 @@ with airflow.DAG(
             ELSE ____________________________________ END AS date
             ,unit
             ,value
-        FROM `data-engineer-5125-336206.workflow_test.SI_raw`
+        FROM `data-engineer-5125-340406.workflow_test.SI_raw`
         WHERE REGEXP_CONTAINS( ____________________________________,'.*年.月|.*年..月')
         )
         ,`temp2` AS
@@ -100,7 +100,7 @@ with airflow.DAG(
         task_id='transaction_2',
         use_legacy_sql=False,
         sql="""
-        create or replace table `data-engineer-5125-336206.workflow_test.category_add_service_industry_sales` as( 
+        create or replace table `data-engineer-5125-340406.workflow_test.category_add_service_industry_sales` as( 
             with middle_category_add_tbl as(
                 select
                   date
@@ -115,7 +115,7 @@ with airflow.DAG(
                   ,value
                   ,unit
                 from 
-                    `data-engineer-5125-336206.workflow_test.SI_raw_aferTransaction`
+                    `data-engineer-5125-340406.workflow_test.SI_raw_aferTransaction`
                 where 
                     industry not like '82aうち社会教育，職業・教育支援施設'
                 and industry not like '82bうち学習塾，教養・技能教授業'
@@ -166,12 +166,12 @@ with airflow.DAG(
         task_id='transaction_3',
         use_legacy_sql=False,
         sql="""
-        create or replace table `data-engineer-5125-336206.workflow_test.large_category_table` as(
+        create or replace table `data-engineer-5125-340406.workflow_test.large_category_table` as(
             select 
                 normalize(regexp_extract(industry,'.'),NFKC) as large_category
                 ,regexp_extract(industry,'^.(.*)') as large_category_name
             from 
-                `data-engineer-5125-336206.workflow_test.SI_raw_aferTransaction`
+                `data-engineer-5125-340406.workflow_test.SI_raw_aferTransaction`
             where 
                 regexp_extract(industry,'^\\d{1,2}') is null
             and 
@@ -183,7 +183,7 @@ with airflow.DAG(
         task_id='transaction_4',
         use_legacy_sql=False,
         sql="""
-        create or replace table `data-engineer-5125-336206.workflow_test.service_industry_mart` as(
+        create or replace table `data-engineer-5125-340406.workflow_test.service_industry_mart` as(
             select 
                 date
                 ,item
@@ -195,8 +195,8 @@ with airflow.DAG(
                 ,value
                 ,unit
             from 
-                `data-engineer-5125-336206.workflow_test.category_add_service_industry_sales` as category_add_service_industry_sales
-            left join `data-engineer-5125-336206.workflow_test.large_category_table` as large_category_tbl
+                `data-engineer-5125-340406.workflow_test.category_add_service_industry_sales` as category_add_service_industry_sales
+            left join `data-engineer-5125-340406.workflow_test.large_category_table` as large_category_tbl
                 on category_add_service_industry_sales.large_category = large_category_tbl.large_category
             order by 6,1)
         """
@@ -206,7 +206,7 @@ with airflow.DAG(
     delete_work_table = \
         bigquery_table_delete_operator.BigQueryTableDeleteOperator(
             task_id='delete_work_table',
-            deletion_dataset_table='data-engineer-5125-336206.workflow_test.SI_raw'
+            deletion_dataset_table='data-engineer-5125-340406.workflow_test.SI_raw'
         )
     # リスト6-7. タスクの依存関係の定義
     # 各タスクの依存関係を定義する。
